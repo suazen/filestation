@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的文件</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/style/admin.css">
+</head>
+<body layadmin-themealias="default">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <span class="layui-breadcrumb" id="breadcrumb">
+                <a th:each="folder,iStat:${folders}" th:if="${!iStat.last}" th:href="@{'/myFiles?folderId='+${folder.id}}" th:text="${folder.title}"></a>
+                <a th:each="folder,iStat:${folders}" th:if="${iStat.last}"><cite th:text="${folder.title}"></cite></a>
+            </span>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table" lay-filter="table"></table>
+        </div>
+    </div>
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-fluid">
+            <button class="layui-btn layui-btn-xs" lay-event="upload" id="upload">
+                <i class="layui-icon">&#xe67c;</i>上传文件
+            </button>
+            <button class="layui-btn layui-btn-xs" lay-event="createFolder">
+                新建文件夹
+            </button>
+        </div>
+    </script>
+</div>
+
+<script src="/assets/layui/layui.js"></script>
+<script src="/js/myFiles.js"></script>
+</body>
+</html>

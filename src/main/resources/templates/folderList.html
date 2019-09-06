@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>目录列表</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/style/admin.css">
+    <link rel="stylesheet" href="/assets/lib/dtree/dtree.css">
+    <link rel="stylesheet" href="/assets/lib/dtree/font/dtreefont.css">
+</head>
+<body>
+<fieldset class="layui-elem-field" style="margin-right: 20px">
+    <div style="overflow: auto;" class="layui-field-box" id="toolbarDiv">
+        <ul id="folderTree" class="dtree" data-id="0"></ul>
+    </div>
+</fieldset>
+<script src="/assets/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/assets/'
+    }).extend({
+        dtree: 'lib/dtree/dtree'
+    }).use(['jquery', 'table','dtree','upload','layer'], function () {
+        var $ = layui.$;
+        var dtree = layui.dtree;
+
+        var index = parent.layer.getFrameIndex(window.name);
+
+        var treeIns = dtree.render({
+            elem: "#folderTree",
+            url: '/folder/findMyFolder',
+            dataStyle: "layuiStyle",
+            skin: "layui",
+            dot: false,
+            nodeIconArray: {"1": {"open": "dtree-icon-wenjianjiazhankai", "close": "dtree-icon-weibiaoti5"}},  // 自定扩展的二级非最后一级图标，从1开始
+            leafIconArray: {"8": "dtree-icon-weibiaoti5"},  // 自定义扩展的二级最后一级图标，从8开始
+            ficon: "-1",
+            icon: ["1", "8"], // 使用
+            response: {
+                statusCode: 200,
+                message: 'msg'
+            },
+            toolbar: true,
+            toolbarScroll: "#toolbarDiv",
+            toolbarLoad: "node",
+            toolbarStyle: {
+                title: "目录",
+                area: ["50%", "400px"]
+            },
+            toolbarFun: {
+                addTreeNode: function (treeNode) {
+
+                },
+                editTreeNode: function (treeNode) {
+                    treeIns.changeTreeNodeEdit(true / false); // 配套使用,同上
+                },
+                delTreeNode: function (treeNode) {
+                    treeIns.changeTreeNodeDel(true / false); // 配套使用,同上
+                }
+            }
+            // , done:function () {
+            //     parent.layer.iframeAuto(index);
+            // }
+        });
+
+        dtree.on("node('folderTree')" ,function(obj){
+            var folderId=obj.param.nodeId;
+            var query=window.location.search;
+            $.get('/file/opera'+query,{folderId:folderId},function (res) {
+                if (res.code===200){
+                    parent.layer.msg('保存成功', {icon: 1});
+                    parent.layer.close(index);
+                    parent.tableIns.reload();
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

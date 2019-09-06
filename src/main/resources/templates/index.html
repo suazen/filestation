@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Slow盘</title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="short icon" href="/assets/layui/images/favicon.png">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/assets/style/admin.css" media="all">
+</head>
+<body class="layui-layout-body" layadmin-themealias="default">
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <!-- 头部区域 -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect="">
+                    <a href="javascript:;" layadmin-event="flexible" title="">
+                        <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+<!--                <li class="layui-nav-item" lay-unselect="" style="">-->
+<!--                    <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">-->
+<!--                        <i class="layui-icon layui-icon-notice"></i>-->
+
+<!--                        &lt;!&ndash; 如果有新消息，则显示小圆点 &ndash;&gt;-->
+<!--                        <span class="layui-badge-dot"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="theme">
+                        <i class="layui-icon layui-icon-theme"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect="" style="">
+                    <a href="javascript:;" layadmin-event="note">
+                        <i class="layui-icon layui-icon-note"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect="" style="">
+                    <a href="javascript:;" layadmin-event="fullscreen">
+                        <i class="layui-icon layui-icon-screen-full"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="" style="">
+                    <a th:if="${!isUserLogin}" href="/login">立即登陆</a>
+                    <a th:if="${isUserLogin}" href="javascript:;">
+                        <cite th:text="${user.name}"></cite>
+                        <span class="layui-nav-more"></span></a>
+                    <dl th:if="${isUserLogin}" class="layui-nav-child layui-anim layui-anim-upbit">
+                        <dd><a lay-href="set/user/info.html">基本资料</a></dd>
+                        <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+                        <hr>
+                        <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                    </dl>
+                </li>
+
+                <li class="layui-nav-item layui-hide-xs" lay-unselect="" style="">
+                    <a layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+                <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect="">
+                    <a layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-side-menu">
+            <div class="layui-side-scroll">
+                <div class="layui-logo" lay-href="/sharedFiles">
+                    <img src="/assets/layui/images/favicon.png"> <span>Slow盘</span>
+                </div>
+
+                <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
+                    lay-filter="layadmin-system-side-menu">
+                    <li class="layui-nav-item layui-nav-itemed layui-this">
+                        <a lay-tips="共享列表" lay-href="/sharedFiles" lay-direction="2">
+                            <i class="layui-icon layui-icon-release"></i>
+                            <cite>共享列表</cite>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item" th:if="${isUserLogin}">
+                        <a lay-tips="我的文件" th:attr="lay-href='/myFiles?folderId='+${user.folderId}" lay-direction="2">
+                            <i class="layui-icon layui-icon-file"></i>
+                            <cite>我的文件</cite>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layadmin-pagetabs" id="LAY_app_tabs">
+            <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                    <li class="layui-nav-item" lay-unselect="" style="">
+                        <a href="javascript:;"><span class="layui-nav-more"></span></a>
+                        <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+                            <dd layadmin-event="closeThisTabs"><a>关闭当前标签页</a></dd>
+                            <dd layadmin-event="closeOtherTabs"><a>关闭其它标签页</a></dd>
+                            <dd layadmin-event="closeAllTabs"><a>关闭全部标签页</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+            <div class="layui-tab" lay-unauto="" lay-allowclose="true" lay-filter="layadmin-layout-tabs">
+                <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                    <li lay-id="/sharedFiles" lay-attr="/sharedFiles" class="layui-this" style="">共享列表</li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-body" id="LAY_app_body">
+            <div class="layadmin-tabsbody-item layui-show">
+                <iframe src="/sharedFiles" frameborder="0" class="layadmin-iframe"></iframe>
+            </div>
+        </div>
+        <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+</div>
+<script src="/assets/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/assets/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index');
+</script>
+</body>
+</html>

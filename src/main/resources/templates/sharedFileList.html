@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理界面</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/style/admin.css">
+</head>
+<body layadmin-themealias="default">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table" lay-filter="table"></table>
+        </div>
+
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="changeState">更改状态</button>
+                <button class="layui-btn layui-btn-sm" lay-event="resetPwd">重置密码</button>
+                <button class="layui-btn layui-btn-sm" lay-event="createUser">新建</button>
+            </div>
+        </script>
+
+        <script type="text/html" id="bar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="download">下载</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="save">保存</a>
+        </script>
+    </div>
+</div>
+
+<script src="/assets/layui/layui.js"></script>
+<script>
+    var tableIns;
+    //JavaScript代码区域
+    layui.use(['jquery', 'table', 'laydate'], function () {
+        var $ = layui.$;
+        var table = layui.table;
+        var height=$(document).height()-100;
+
+        tableIns = table.render({
+            elem: '#table',
+            height: height+22,
+            cols: [
+                [
+                    {field: 'id', hide: true},
+                    {field: 'fileName', title: "名称", sort: true},
+                    {field: 'fileSize', title: "文件大小",templet:function (d) {
+                        var kb=(d.fileSize/1024).toFixed(2);
+                        if (kb<1024)
+                            return kb+'kb';
+                        else
+                            return (d.fileSize/1024/1024).toFixed(2)+'mb';
+                        }},
+                    {field: 'uploadTime', title: "创建时间"},
+                    {field:'uploader',title:'共享者',templet:function (d) {
+                            return d.uploader.name;
+                        }},
+                    {fixed: 'right', title: '操作',width:120, align: 'center', toolbar: '#bar'}
+                ]
+            ],
+            url: "/file/sharedList",
+            response: {
+                statusCode: 200
+            },
+            parseData: function (res) {
+                return {
+                    "code":res.code,
+                    "data": res.data.data,
+                    "count": res.data.count
+                };
+            }
+        });
+
+        table.on('tool(table)',function (obj) {
+            var data = obj.data;
+            var tr=obj.tr;
+            var saveBtn=tr.children('td').eq(4).children('div').children('a').eq(1);
+
+            if (obj.event==='download'){
+                var $eleForm = $("<form method='get'></form>");
+                $eleForm.attr("action",window.location.href.split('/')[0]+'/file/'+data.id+'/'+data.name);
+                $(document.body).append($eleForm);
+                $eleForm.submit();
+            } else if (obj.event==='save'){
+                layer.open({
+                    type: 2,
+                    title: '保存文件',
+                    shadeClose: true,
+                    shade: 0.8,
+                    content: '/myFolderList?fileId=' + data.id+'&action=copy'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

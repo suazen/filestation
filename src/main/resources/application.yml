@@ -1,0 +1,26 @@
+server:
+  port: 8001
+  servlet:
+    session:
+      timeout: 0
+      persistent: true
+spring:
+  datasource:
+    username: root
+    password: Super9689
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.102.129.149:3306/filestation?useSSL=false&characterEncoding=utf-8&serverTimezone=Hongkong
+    name: filestation
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  servlet:
+    multipart:
+      max-file-size: 10000MB
+      max-request-size: 10000MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
